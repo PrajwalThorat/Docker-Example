@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+    mysqldb:
+        image: mysql:latest
+        container_name: mysql_container
+        environment: 
+            MYSQL_ROOT_PASSWORD: Pass@123
+            MYSQL_DATABASE: userdb
+    
+    mongodb:
+        image: mongo:latest
+        container_name: mongodb_container
+
+    userservice:
+        image: prajwalt/userservice:version2
+        container_name: userservice
+        ports:
+            - 8080:8811
+        environment:
+            MYSQL_URL: jdbc:mysql://mysqldb:3306/userdb
+          
+        depends_on:
+            - mysqldb
+        restart: always
+
+    productservice:
+        image: prajwalt/productservice:version1
+        container_name: productservice
+        ports:
+            - 8090:8030
+        environment:
+           MONGO_URI: mongodb://mongodb:27017/productdb
+        depends_on:
+            - mongodb
+        restart: always
+
+
